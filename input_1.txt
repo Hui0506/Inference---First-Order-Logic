@@ -1,0 +1,55 @@
+6
+F(Bob)
+H(John)
+~H(Alice)
+~H(John)
+G(Bob)
+G(Tom)
+14
+A(x) => H(x)
+D(x,y) => ~H(y)
+B(x,y) ^ C(x,y) => A(x)
+B(John,Alice)
+B(John,Bob)
+D(x,y) ^ Q(y) => C(x,y)
+D(John,Alice)
+Q(Bob)
+D(John,Bob)
+F(x) => G(x)
+G(x) => H(x)
+H(x) => F(x)
+R(x) => H(x)
+R(Tom)
+
+
+predicate query = predicate(H,John); 
+
+boolean BackwardChaining(predicate query)
+{	
+	//base case
+	check the query if it exists in facts.
+	R : retrieve the the array of facts
+	iterate through the arraylist(facts, query.fnName)
+	if(fact and query matches)
+		return true;
+		
+	retrieve predicates for which the key is query.fnName
+	Rules->R
+	Now iterate from R.sentences and not R.fact
+	outerloop: for(ruleType RT in R)
+	{
+		p^q
+		retrieve all the premises
+		array<premises> pr = RT.premises;
+		for(premises p in pr)
+			{
+				predicate newquery = unify(query.fnargs, p, RT.conclusion.argument);
+				if(BackwardChaining(newquery) == false)
+					continue outerloop;
+			}
+		return true;	
+	}
+	
+	
+	return false;
+}
